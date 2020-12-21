@@ -1,0 +1,7 @@
+name: udp-proxy
+in-bound:
+  address: 10.8.0.34
+  port: 22023
+out-bound:
+  address: 10.8.0.1
+  port: 22023
