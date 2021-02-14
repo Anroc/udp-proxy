@@ -1,20 +1,26 @@
 package com.anroc.mitm.proxy.data;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NonNull;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 
 @Data
-@AllArgsConstructor
 public class UDPPackage {
 
     private byte[] data;
     private int length;
     private InetAddress inetAddress;
     private int port;
+
+    private boolean resetConnection = false;
+
+    public UDPPackage(byte[] data, int length, InetAddress inetAddress, int port) {
+        this.data = data;
+        this.length = length;
+        this.inetAddress = inetAddress;
+        this.port = port;
+    }
 
     @Override
     public UDPPackage clone() {
@@ -31,6 +37,10 @@ public class UDPPackage {
 
     public DatagramPacket toDatagramPacket(InetAddress inetAddress, int port) {
         return new DatagramPacket(getData(), getLength(), inetAddress, port);
+    }
+
+    public DatagramPacket toDatagramPacket() {
+        return new DatagramPacket(getData(), getLength(), getInetAddress(), getPort());
     }
 
     public static UDPPackage fromDatagramPacket(DatagramPacket datagramPacket, InetAddress inetAddress, int port) {
@@ -50,5 +60,14 @@ public class UDPPackage {
         byte[] newArray = new byte[length];
         System.arraycopy(input, 0, newArray, 0, length);
         return newArray;
+    }
+
+    public UDPPackage resetConnection() {
+        this.resetConnection = true;
+        return this;
+    }
+
+    public boolean shouldResetConnection() {
+        return this.resetConnection;
     }
 }

@@ -5,3 +5,9 @@ in-bound:
 out-bound:
   address: 10.8.0.1
   port: 22023
+logging.level:
+  com:
+    anroc:
+      mitm:
+        proxy:
+          info

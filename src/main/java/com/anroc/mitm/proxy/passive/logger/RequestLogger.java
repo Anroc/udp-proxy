@@ -5,7 +5,6 @@ import com.anroc.mitm.proxy.passive.RequestListener;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
-import java.net.DatagramPacket;
 import java.util.Arrays;
 import java.util.Optional;
 
