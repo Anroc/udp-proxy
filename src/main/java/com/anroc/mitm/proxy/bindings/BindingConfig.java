@@ -1,4 +1,4 @@
-package com.anroc.mitm.bindings;
+package com.anroc.mitm.proxy.bindings;
 
 import lombok.Data;
 import lombok.SneakyThrows;

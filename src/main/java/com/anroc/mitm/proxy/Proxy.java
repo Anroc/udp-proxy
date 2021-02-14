@@ -1,17 +1,19 @@
 package com.anroc.mitm.proxy;
 
-import com.anroc.mitm.bindings.in.InBound;
-import com.anroc.mitm.bindings.in.InBoundConfig;
-import com.anroc.mitm.bindings.in.events.ClientPackageReceivedEvent;
-import com.anroc.mitm.bindings.out.OutBound;
-import com.anroc.mitm.bindings.out.OutBoundConfig;
-import com.anroc.mitm.bindings.out.events.ServerPackageReceivedEvent;
+import com.anroc.mitm.proxy.bindings.in.InBound;
+import com.anroc.mitm.proxy.bindings.in.InBoundConfig;
+import com.anroc.mitm.proxy.bindings.in.events.ClientPackageReceivedEvent;
+import com.anroc.mitm.proxy.bindings.out.OutBound;
+import com.anroc.mitm.proxy.bindings.out.OutBoundConfig;
+import com.anroc.mitm.proxy.bindings.out.events.ServerPackageReceivedEvent;
 import com.anroc.mitm.proxy.active.Interceptor;
 import com.anroc.mitm.proxy.active.RequestInterceptor;
 import com.anroc.mitm.proxy.active.ResponseInterceptor;
 import com.anroc.mitm.proxy.data.UDPPackage;
 import com.anroc.mitm.proxy.events.ClientPackageProcessedEvent;
 import com.anroc.mitm.proxy.events.ServerPackageProcessedEvent;
+import com.anroc.mitm.proxy.mappers.RequestInterpreter;
+import com.anroc.mitm.proxy.mappers.ResponseInterpreter;
 import com.anroc.mitm.proxy.passive.Listener;
 import com.anroc.mitm.proxy.passive.RequestListener;
 import com.anroc.mitm.proxy.passive.ResponseListener;
@@ -41,6 +43,11 @@ public class Proxy {
     private final List<RequestListener> requestListeners;
     private final List<ResponseListener> responseListeners;
 
+    @Autowired(required = false)
+    private RequestInterpreter requestInterpreter;
+    @Autowired(required = false)
+    private ResponseInterpreter responseInterpreter;
+
     @Autowired
     public Proxy(
             Executor executor,
@@ -66,13 +73,28 @@ public class Proxy {
         log.info("Found {} request interceptors...", requestInterceptors.size());
         log.info("Found {} response interceptors...", responseInterceptors.size());
 
+        if (requestInterpreter == null) {
+            requestInterpreter = (udpPackage -> udpPackage);
+            log.info("No request interpreter registered.");
+        } else {
+            log.info("Found request interpreter.");
+        }
+
+        if (responseInterpreter == null) {
+            responseInterpreter = (udpPackage -> udpPackage);
+            log.info("No response interpreter registered.");
+        } else {
+            log.info("Found response interpreter.");
+        }
+
+
         log.info("Starting client listener...");
         executor.execute(this.inBound);
     }
 
     public void proxy(ClientPackageReceivedEvent event) {
-        UDPPackage source = event.getSource();
-        UDPPackage originalPacketCopy = source.clone();
+        UDPPackage source = requestInterpreter.interpret(event.getSource());
+        UDPPackage originalPacketCopy = requestInterpreter.interpret(source.clone());
 
         Optional<UDPPackage> udpPackage = proxyActive(source, originalPacketCopy, getRequestInterceptors());
         executor.execute(() -> proxyPassive(udpPackage, originalPacketCopy, getRequestListeners()));
@@ -85,8 +107,8 @@ public class Proxy {
     }
 
     public void proxy(ServerPackageReceivedEvent event) {
-        UDPPackage source = event.getSource();
-        UDPPackage originalPacketCopy = source.clone();
+        UDPPackage source = responseInterpreter.interpret(event.getSource());
+        UDPPackage originalPacketCopy = responseInterpreter.interpret(source.clone());
 
         Optional<UDPPackage> udpPackage = proxyActive(source, originalPacketCopy, getResponseInterceptors());
         executor.execute(() -> proxyPassive(udpPackage, originalPacketCopy, getResponseListeners()));

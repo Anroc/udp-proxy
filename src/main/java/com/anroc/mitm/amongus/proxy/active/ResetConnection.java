@@ -1,4 +1,4 @@
-package com.anroc.mitm.proxy.active.logic;
+package com.anroc.mitm.amongus.proxy.active;
 
 import com.anroc.mitm.proxy.active.RequestInterceptor;
 import com.anroc.mitm.proxy.data.UDPPackage;

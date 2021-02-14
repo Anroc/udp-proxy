@@ -1,6 +1,6 @@
-package com.anroc.mitm.bindings.out;
+package com.anroc.mitm.proxy.bindings.out;
 
-import com.anroc.mitm.bindings.out.events.ServerPackageReceivedEvent;
+import com.anroc.mitm.proxy.bindings.out.events.ServerPackageReceivedEvent;
 import com.anroc.mitm.proxy.Proxy;
 import com.anroc.mitm.proxy.data.UDPPackage;
 import com.anroc.mitm.proxy.events.ClientPackageProcessedEvent;

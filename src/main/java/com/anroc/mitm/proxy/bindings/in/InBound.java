@@ -1,6 +1,6 @@
-package com.anroc.mitm.bindings.in;
+package com.anroc.mitm.proxy.bindings.in;
 
-import com.anroc.mitm.bindings.in.events.ClientPackageReceivedEvent;
+import com.anroc.mitm.proxy.bindings.in.events.ClientPackageReceivedEvent;
 import com.anroc.mitm.proxy.Proxy;
 import com.anroc.mitm.proxy.data.UDPPackage;
 import com.anroc.mitm.proxy.events.ServerPackageProcessedEvent;
@@ -49,7 +49,7 @@ public class InBound implements Runnable {
         UDPPackage source = event.getSource();
         DatagramPacket datagramPacket = source.toDatagramPacket();
         log.debug("Sending packet: {}", datagramPacket.getData());
-        log.info("Sending to {}:{}", datagramPacket.getSocketAddress(), datagramPacket.getPort());
+        log.debug("Sending to {}:{}", datagramPacket.getSocketAddress(), datagramPacket.getPort());
         socket.send(datagramPacket);
     }
 

@@ -1,4 +1,4 @@
-package com.anroc.mitm;
+package com.anroc.mitm.proxy.events;
 
 import org.springframework.context.ApplicationEvent;
 

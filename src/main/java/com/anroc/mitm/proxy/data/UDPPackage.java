@@ -4,14 +4,15 @@ import lombok.Data;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.util.Arrays;
 
 @Data
 public class UDPPackage {
 
-    private byte[] data;
-    private int length;
-    private InetAddress inetAddress;
-    private int port;
+    private final byte[] data;
+    private final int length;
+    private final InetAddress inetAddress;
+    private final int port;
 
     private boolean resetConnection = false;
 
@@ -35,7 +36,7 @@ public class UDPPackage {
         );
     }
 
-    public DatagramPacket toDatagramPacket(InetAddress inetAddress, int port) {
+    public final DatagramPacket toDatagramPacket(InetAddress inetAddress, int port) {
         return new DatagramPacket(getData(), getLength(), inetAddress, port);
     }
 
@@ -69,5 +70,10 @@ public class UDPPackage {
 
     public boolean shouldResetConnection() {
         return this.resetConnection;
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(getData());
     }
 }

@@ -1,6 +1,6 @@
-package com.anroc.mitm.bindings;
+package com.anroc.mitm.proxy.bindings;
 
-import com.anroc.mitm.MITMEvent;
+import com.anroc.mitm.proxy.events.MITMEvent;
 import com.anroc.mitm.proxy.data.UDPPackage;
 
 public abstract class PackageReceivedEvent extends MITMEvent<UDPPackage> {
